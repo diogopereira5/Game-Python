@@ -33,6 +33,15 @@ while display_open:
     if len(players) != 0:  # se nao houver player, nao tera acao de botao
         move_player(pygame, comandos, players[0])
 
+    #colisao do player + fruta
+    if players and fruits:
+        if fruits[0][0] >= (players[0][0] - (players[0][2])) and fruits[0][0] <= (players[0][0] + (players[0][2])) and fruits[0][1] >= (players[0][1] - (players[0][2])) and fruits[0][1] <= (players[0][1] + (players[0][2])):
+            fruits[0] = create_fruit() #nova fruta
+            players[0][2] += fruits[0][2] #aumenta tamnaho player
+            players[0][3] -= 1 #velocide do player
+            if players[0][3] <= 1:
+                players[0][3] = 1
+
     display.fill((190, 190, 190))  # atualiza pixels do display
 
     # mostrar fruta
