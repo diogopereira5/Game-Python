@@ -3,13 +3,13 @@ from player import create_player, move_player, move_player_ia
 from fruit import create_fruit
 from ia import rede_neural, criar_pesos, atualizar_pesos
 import numpy as np
-from random import uniform
+from random import uniform, randint
 
 pygame.init()
 
 players = []
 fruits = []
-pesos,pesos_oculta = criar_pesos()
+pesos, pesos_oculta = criar_pesos()
 error = 0
 rodada = 0
 
@@ -21,8 +21,8 @@ new_player = False
 display_open = True
 while display_open:
 
-    pygame.time.delay(50)
-    saida_oculta = []    
+    pygame.time.delay(100)
+    saida_oculta = []
     rodada += 1
     distance = 0
 
@@ -35,10 +35,7 @@ while display_open:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if len(players) < 1:
-                    players.append(create_player())
-            if event.key == pygame.K_LSHIFT:
-                rede_neural(players[0][0], players[0][1],
-                            fruits[0][0], fruits[0][1], pesos, pesos_oculta)
+                    players = create_player()
 
     # eventos do teclado
     comandos = pygame.key.get_pressed()
@@ -47,10 +44,11 @@ while display_open:
 
     # i.a jogando aqui
     if len(players) != 0:  # se nao houver player, nao tera acao de botao
-        players[0][0], players[0][1], saida_oculta = move_player_ia(players[0][0], players[0][1],
-                       fruits[0][0], fruits[0][1], players[0], pesos, pesos_oculta)        
-        distance = abs(players[0][0] - fruits[0][0])
-        distance = error + (abs(players[0][1] - fruits[0][1]))
+        for player in players:
+            distanceX = fruits[0][0] - player[0]
+            distanceY = fruits[0][1] - player[1]
+            player[0], player[1], saida_oculta = move_player_ia(
+                distanceX, distanceY, player, pesos, pesos_oculta)
 
     # colisao do player + fruta
     if players and fruits:
@@ -61,11 +59,10 @@ while display_open:
             if players[0][3] <= 1:
                 players[0][3] = 1
         else:
-            new_distance = abs(players[0][0] - fruits[0][0])
-            new_distance = error + (abs(players[0][1] - fruits[0][1]))
-            if distance < new_distance:
-                error = new_distance / 100
-            
+            distanceX = fruits[0][0] - players[0][0]
+            distanceY = fruits[0][1] - players[0][1]
+            error = (distanceX + distanceY) / 100
+
     display.fill((190, 190, 190))  # atualiza pixels do display
 
     # mostrar fruta
@@ -81,7 +78,7 @@ while display_open:
     if players:
         for i in players:
             if i[4]:
-                pygame.draw.circle(display, (10, 10, 255), (i[0], i[1]), i[2])
+                pygame.draw.circle(display, (i[5][0],i[5][1],i[5][2]), (i[0], i[1]), i[2])
 
     pygame.display.flip()
 
@@ -89,11 +86,18 @@ while display_open:
     pygame.display.update()
 
     if rodada >= 20:
-        error = uniform(-1,1)
+        if fruits and players:
+            distanceX = fruits[0][0] - players[0][0]
+            distanceY = fruits[0][1] - players[0][1]
+            error = (distanceX + distanceY) / randint(1,10)
+            rodada = 0
 
-    #calcular erro
+    # calcular erro
     if players and fruits:
-        entradas = np.array([players[0][0], players[0][1],fruits[0][0], fruits[0][1], players[0], 1])
-        pesos, pesos_oculta = atualizar_pesos(pesos,pesos_oculta,error,entradas,saida_oculta)
+        distanceX = fruits[0][0] - players[0][0]
+        distanceY = fruits[0][1] - players[0][1]
+        entradas = [distanceX, distanceY, 1]
+        pesos, pesos_oculta = atualizar_pesos(
+            pesos, pesos_oculta, error, entradas, saida_oculta)
 
 pygame.quit()

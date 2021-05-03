@@ -2,68 +2,89 @@ from random import uniform
 import numpy as np
 
 
-def rede_neural(player_x, player_y, fruit_x, fruit_y, pesos, pesos_oculta):
-    entradas = np.array([player_x, player_y, fruit_x, fruit_y, 1])
+def rede_neural(distanceX, distanceY, pesos, pesos_oculta):
+    entradas = [distanceX, distanceY, 1]
 
-    primeiraOculta = np.sum(entradas * pesos[0])
-    segundaOculta = np.sum(entradas * pesos[1])
-    terceiraOculta = np.sum(entradas * pesos[2])
-    quartaOculta = np.sum(entradas * pesos[3])
+    saidaOculta = []
+    for i in range(len(pesos)):
+        v = entradas[0] * pesos[i][0]
+        v += entradas[1] * pesos[i][1]
+        v += entradas[2] * pesos[i][2]
+        saidaOculta.append(v)
 
-    primeiraOculta = round(sigmoid(primeiraOculta), 3)
-    segundaOculta = round(sigmoid(segundaOculta), 3)
-    terceiraOculta = round(sigmoid(terceiraOculta), 3)
-    quartaOculta = round(sigmoid(quartaOculta), 3)
+    for i in range(len(saidaOculta)):
+        if saidaOculta[i] >= 0:
+            saidaOculta[i] = 1
+        else:
+            saidaOculta[i] = 0
 
-    saidaOculta = np.array(
-        [primeiraOculta, segundaOculta, terceiraOculta, quartaOculta])
+    saidas = []
+    for i in range(len(pesos_oculta)):
+        v = saidaOculta[0] * pesos_oculta[i][0]
+        v += saidaOculta[1] * pesos_oculta[i][1]
+        v += saidaOculta[2] * pesos_oculta[i][2]
+        v += saidaOculta[1] * pesos_oculta[i][3]
+        v += saidaOculta[2] * pesos_oculta[i][4]
+        saidas.append(v)
 
-    cima = np.sum(saidaOculta * pesos_oculta[0])
-    baixo = np.sum(saidaOculta * pesos_oculta[1])
-    esquerda = np.sum(saidaOculta * pesos_oculta[2])
-    direita = np.sum(saidaOculta * pesos_oculta[3])    
+    for i in range(len(saidas)):
+        saidas[i] = sigmoid(saidas[i])    
 
-    maior = cima
-    bt = 0
-    if baixo > maior:
-        maior = baixo
-        bt = 1
-    if esquerda > maior:
-        maior = esquerda
-        bt = 2
-    if direita > maior:
-        maior = direita
-        bt = 3    
+    maior = 0
+    direcao = 0
+    for i in range(len(saidas)):
+        if saidas[i] > maior:
+            maior = saidas[i]
+            direcao = i
 
-    return bt, saidaOculta
+    # print(saidaOculta)
+
+    return direcao, saidaOculta
 
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-def atualizar_pesos(pesos, pesos_oculta, error, entradas, saida_oculta):
+def atualizar_pesos(pesos, pesos_oculta, erro, entradas, saida_oculta):
 
-    for i in range(len(pesos_oculta)):
-        pesos_oculta[i] = pesos_oculta[i] + (0.01 * saida_oculta[i] * error)
+    if erro > 0:
 
-    for i in range(len(pesos)):
-        pesos[i] = pesos[i] + (0.01 * entradas[i] * error)
+        npesos_oculta = []
+        npesos = []
 
-    return pesos, pesos_oculta
+        for peso in pesos_oculta:
+            temp = []
+            for i in range(len(saida_oculta)):
+                npeso = peso[i] + (uniform(-1, 1) * saida_oculta[i] * erro)
+                temp.append(npeso)
+            npesos_oculta.append(temp)
+
+        for peso in pesos:
+            temp = []
+            for i in range(len(entradas)):
+                npeso = peso[i] + (0.1 * entradas[i] * erro)
+                temp.append(npeso)
+            npesos.append(temp)
+    else:
+        npesos = pesos
+        npesos_oculta = pesos_oculta
+
+    return npesos, npesos_oculta
 
 
 def criar_pesos():
-    pesos1 = np.array([uniform(-1, 1) for i in range(0, 5)])
-    pesos2 = np.array([uniform(-1, 1) for i in range(0, 5)])
-    pesos3 = np.array([uniform(-1, 1) for i in range(0, 5)])
-    pesos4 = np.array([uniform(-1, 1) for i in range(0, 5)])
-    pesos = np.array([pesos1, pesos2, pesos3, pesos4])
+    pesos1 = np.array([uniform(-1, 1) for i in range(0, 3)])
+    pesos2 = np.array([uniform(-1, 1) for i in range(0, 3)])
+    pesos3 = np.array([uniform(-1, 1) for i in range(0, 3)])
+    pesos4 = np.array([uniform(-1, 1) for i in range(0, 3)])
+    pesos5 = np.array([uniform(-1, 1) for i in range(0, 3)])
+    pesos = np.array([pesos1, pesos2, pesos3, pesos4, pesos5])
 
-    peso_primeiraOculta = np.array([uniform(-1, 1) for i in range(0, 4)])
-    peso_segundaOculta = np.array([uniform(-1, 1) for i in range(0, 4)])
-    peso_terceiraOculta = np.array([uniform(-1, 1) for i in range(0, 4)])
-    peso_quartoOculta = np.array([uniform(-1, 1) for i in range(0, 4)])
+    peso_primeiraOculta = np.array([uniform(-1, 1) for i in range(0, 5)])
+    peso_segundaOculta = np.array([uniform(-1, 1) for i in range(0, 5)])
+    peso_terceiraOculta = np.array([uniform(-1, 1) for i in range(0, 5)])
+    peso_quartoOculta = np.array([uniform(-1, 1) for i in range(0, 5)])
     pesos_oculta = np.array(
         [peso_primeiraOculta, peso_segundaOculta, peso_terceiraOculta, peso_quartoOculta])
 

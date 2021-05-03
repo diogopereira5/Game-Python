@@ -6,7 +6,7 @@ def create_fruit():
     y = random(10, 790)
     y = (y//10) * 10
     # print('fruit',x,y)
-    tamanho = 5
+    tamanho = 10
     visible = True
 
     return [x,y,tamanho,visible]
