@@ -1,7 +1,6 @@
 import numpy as np
 import sys
 
-
 def move_players(players, apple):
 
     for player in players:
@@ -75,6 +74,7 @@ def rede_neural(player, apple):
         v = sigmoid(v)
         saida.append(v)
 
+    #verifica o valor com maior probabilidade 
     maior = 0
     direcao = 0
     for i in range(len(saida)):

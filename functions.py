@@ -44,3 +44,27 @@ def create_players(quantidade):
         data.append(temp)
 
     return data
+
+def mostrar_geracao(players,geracao):
+    print("______________________")
+    print("Teste com "+str(geracao)+"ª geração")
+    n = 1
+    for player in players:
+        print("Player: "+str(n)+" - Pontuação = "+str(player[3]))
+        n += 1
+
+    #verificar o melhor indíviduo para mutação
+    tempMelhor = 0
+    position = 0
+    n = 0
+    for player in players:
+        if tempMelhor != 0:
+            if player[3] > tempMelhor:
+                tempMelhor = player[3]
+                position = n
+        else:
+            tempMelhor = player[3]
+            position = n
+        n += 1
+
+    return players[position]

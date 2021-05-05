@@ -1,5 +1,5 @@
 import pygame
-from functions import create_apple, create_players
+from functions import create_apple, create_players, mostrar_geracao
 from neural import move_players
 
 pygame.init()
@@ -8,7 +8,9 @@ pygame.display.set_caption("Game com Python")
 
 apple = []
 players = []
+melhorPlayer = []
 rodada = 0
+geracao = 1
 
 display_open = True
 while display_open:
@@ -25,8 +27,8 @@ while display_open:
     if len(apple) == 0:
         apple = create_apple()
     if len(players) == 0:
-            players = create_players(10) # criar n players
-    
+        players = create_players(10)  # criar n players
+
     display.fill((0, 0, 0))  # atualiza pixels do display (limpar sombras)
 
     # mostrat personagens
@@ -38,19 +40,21 @@ while display_open:
             pygame.draw.circle(display, (255, 255, 255), (a[0], a[1]), a[2])
 
     # Rede Neural // mover jogadores
-    players = move_players(players,apple)
+    players = move_players(players, apple)
 
     # atualiza frame
     pygame.display.update()
 
+    # verificar melhores da geração
     if rodada >= 100:
-        display_open = False
+        pygame.time.delay(1000)
+        melhorPlayer.append(mostrar_geracao(players, geracao))
+        rodada = 0
+        geracao += 1
 
-print("______________________")
-print("Teste com 1ª geração")
-n = 1
-for player in players:
-    print("Player: "+str(n)+" - Pontuação = "+str(player[3]))
-    n += 1
+print("/n")
+print("melhores pontuações por geração")
+for player in melhorPlayer:
+    print(player[3])
 
 pygame.quit()
