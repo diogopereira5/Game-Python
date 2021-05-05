@@ -32,8 +32,17 @@ def create_players(quantidade, peso1, peso2):
                     temp1.append(value)
                 pesosPrimeiraCamada.append(temp1)
         else: # se houver valor pre definidor, preencher aqui no individuo 
+            size = randint(0,(len(peso1)))
+            for i in range(len(peso1)):
+                temp2 = []
+                if i == size:
+                    for j in peso1[i]:
+                        j = uniform(-1,1)
+                        temp2.append(j)
+                    peso1[i] = temp2
             pesosPrimeiraCamada.append(peso1)
         temp.append(pesosPrimeiraCamada) # 4
+
 
         pesosCamadaOculta = []  # camada oculta
         if peso2 == 0:
@@ -44,7 +53,17 @@ def create_players(quantidade, peso1, peso2):
                     temp1.append(value)
                 pesosCamadaOculta.append(temp1)
         else: # se houver valor pre definidor, preencher aqui no individuo
+            size = randint(0,(len(peso2)))
+            for i in range(len(peso2)):
+                temp2 = []
+                if i == size:
+                    for j in peso2[i]:
+                        j = uniform(-1,1)
+                        temp2.append(j)
+                    peso2[i] = temp2
+        
             pesosCamadaOculta.append(peso2)
+
         temp.append(pesosCamadaOculta) # 5
 
         data.append(temp)

@@ -35,7 +35,7 @@ while display_open:
     if apple:
         pygame.draw.circle(display, (255, 0, 0),
                            (apple[0], apple[1]), apple[2])
-    if players:
+    if players:        
         for a in players:
             pygame.draw.circle(display, (255, 255, 255), (a[0], a[1]), a[2])
 
@@ -46,7 +46,7 @@ while display_open:
     pygame.display.update()
 
     # verificar melhores da geração
-    if rodada >= 100:
+    if rodada >= 10:
         pygame.time.delay(1000)
 
         #recebe os player com mutação em cima do melhor da geração passada
