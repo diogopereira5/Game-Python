@@ -8,7 +8,7 @@ def create_apple():
     return x, y, tamanho
 
 
-def create_players(quantidade):
+def create_players(quantidade, peso1, peso2):
     data = []
     for i in range(quantidade):
         temp = []
@@ -24,28 +24,34 @@ def create_players(quantidade):
 
         #neuronios / pesos
         pesosPrimeiraCamada = []  # primeira camada
-        for i in range(8):
-            temp1 = []
-            for j in range(3):
-                value = (uniform(-1, 1))
-                temp1.append(value)
-            pesosPrimeiraCamada.append(temp1)
+        if peso1 == 0:
+            for i in range(8):
+                temp1 = []
+                for j in range(3):
+                    value = (uniform(-1, 1))
+                    temp1.append(value)
+                pesosPrimeiraCamada.append(temp1)
+        else: # se houver valor pre definidor, preencher aqui no individuo 
+            pesosPrimeiraCamada.append(peso1)
         temp.append(pesosPrimeiraCamada) # 4
 
         pesosCamadaOculta = []  # camada oculta
-        for i in range(4):
-            temp1 = []
-            for j in range(8):
-                value = (uniform(-1, 1))
-                temp1.append(value)
-            pesosCamadaOculta.append(temp1)
+        if peso2 == 0:
+            for i in range(4):
+                temp1 = []
+                for j in range(8):
+                    value = (uniform(-1, 1))
+                    temp1.append(value)
+                pesosCamadaOculta.append(temp1)
+        else: # se houver valor pre definidor, preencher aqui no individuo
+            pesosCamadaOculta.append(peso2)
         temp.append(pesosCamadaOculta) # 5
 
         data.append(temp)
 
     return data
 
-def mostrar_geracao(players,geracao):
+def melhor_player(players,geracao):
     print("______________________")
     print("Teste com "+str(geracao)+"ª geração")
     n = 1
@@ -67,4 +73,9 @@ def mostrar_geracao(players,geracao):
             position = n
         n += 1
 
-    return players[position]
+    #mutação nos players
+    peso1 = players[position][4]
+    peso2 = players[position][5]
+    players = create_players(10, peso1, peso2)
+
+    return players
