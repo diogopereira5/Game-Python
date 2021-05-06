@@ -5,8 +5,8 @@ from neural import atualiza_peso
 
 
 def create_apple():
-    x = randint(1, 199)
-    y = randint(1, 199)
+    x = randint(10, 191)
+    y = randint(10, 191)
     tamanho = 1
     return x, y, tamanho
 
@@ -15,8 +15,8 @@ def create_players(quantidade, peso1, peso2):
     data = []
     for i in range(quantidade):
         temp = []
-        x = randint(1, 199)
-        y = randint(1, 199)
+        x = randint(10, 191)
+        y = randint(10, 191)
         size = 1  # pixels
 
         temp.append(x)  # 0
@@ -58,14 +58,14 @@ def create_players(quantidade, peso1, peso2):
     return data
 
 
-def melhor_player(players, geracao):
+def melhor_player(players, geracao, qtd_players):
 
-    print("______________________")
-    print("Teste com "+str(geracao)+"ª geração")
-    n = 1
-    for player in players:
-        print("Player: "+str(n)+" - Pontuação = "+str(player[3]))
-        n += 1
+    # print("______________________")
+    # print("Teste com "+str(geracao)+"ª geração")
+    # n = 1
+    # for player in players:
+    #     print("Player: "+str(n)+" - Pontuação = "+str(player[3]))
+    #     n += 1
 
     # verificar o melhor indíviduo para mutação
     tempMelhor = 0
@@ -84,10 +84,9 @@ def melhor_player(players, geracao):
     # mutação nos players
     peso1 = players[position][4]
     peso2 = players[position][5]
-    players = create_players(10, peso1, peso2)
+    players = create_players(qtd_players, peso1, peso2)
 
     return players
-
 
 def colisao(players, apple):
     for player in players:

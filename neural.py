@@ -3,7 +3,7 @@ from random import randint, uniform
 import sys
 
 
-def move_players(players, apple):
+def move_players(players, apple, colisao):
 
     for player in players:
         # pega posicao mais indicada a seguir pela rede neural
@@ -36,19 +36,28 @@ def move_players(players, apple):
         NdistanceX = apple[0] - player[0]
         NdistanceY = apple[1] - player[1]
 
+        # colisao de player com apple
+        apple = colisao(players, apple)
+
         # ++++++++++++++++++++++++++++++++++++++++++++++++++
         # pontuacao
         if NdistanceX < distanceX:
             player[3] += 1  # recebe nota 1 por está mais PROXIMO da apple
-        elif NdistanceX >= distanceX:
+        elif NdistanceX > distanceX:
             player[3] -= 1  # recebe nota -1 por está mais LONGE da apple
+            player[4] = atualiza_peso(player[4], 8, 3)
 
         if NdistanceY < distanceY:
             player[3] += 1  # recebe nota 1 por está mais PROXIMO da apple
-        elif NdistanceY >= distanceY:
+        elif NdistanceY > distanceY:
             player[3] -= 1  # recebe nota -1 por está mais LONGE da apple
+            player[5] = atualiza_peso(player[5], 4, 8)
 
-    return players
+        elif NdistanceX == distanceX and NdistanceY == distanceY:
+            player[3] -= 10  # recebe nota -1 por está mais LONGE da apple
+            player[4] = atualiza_peso(player[4], 8, 3)
+
+    return players, apple
 
 
 def rede_neural(player, apple):
@@ -109,3 +118,6 @@ def atualiza_peso(peso, value1, value2):
                 temp1.append(peso[i][j])
         data.append(temp1)
     return data
+
+
+
