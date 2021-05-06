@@ -1,4 +1,5 @@
 import numpy as np
+from random import randint, uniform
 import sys
 
 
@@ -60,8 +61,8 @@ def rede_neural(player, apple):
     EntradaPrimeiraCamadaOculta = []
 
     for peso in pesosPrimeiraCamada:
-        # print(str(len(peso))+" - "+str(len(entradas)))
-        v = np.sum(peso * entradas)
+        # v = np.sum(peso * entradas)
+        v = 1
         if v >= 1:
             v = 1
         else:
@@ -91,3 +92,20 @@ def rede_neural(player, apple):
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+
+def atualiza_peso(peso, value1, value2):
+    data = []
+    size = len(peso) - 1
+    if size < 0:
+        size = 0
+    v = int(randint(0, size))
+    for i in range(value1):
+        temp1 = []
+        for j in range(value2):
+            if j == v:
+                value = (uniform(-1, 1))
+                temp1.append(value)
+            else:
+                temp1.append(peso[i][j])
+        data.append(temp1)
+    return data

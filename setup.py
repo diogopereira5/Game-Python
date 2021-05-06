@@ -1,5 +1,5 @@
 import pygame
-from functions import create_apple, create_players, melhor_player
+from functions import create_apple, create_players, melhor_player, colisao
 from neural import move_players
 
 pygame.init()
@@ -15,7 +15,7 @@ geracao = 1
 display_open = True
 while display_open:
 
-    pygame.time.delay(100)
+    pygame.time.delay(10)
     rodada += 1
 
     # capta acoes do botao
@@ -35,7 +35,7 @@ while display_open:
     if apple:
         pygame.draw.circle(display, (255, 0, 0),
                            (apple[0], apple[1]), apple[2])
-    if players:        
+    if players:
         for a in players:
             pygame.draw.circle(display, (255, 255, 255), (a[0], a[1]), a[2])
 
@@ -45,12 +45,15 @@ while display_open:
     # atualiza frame
     pygame.display.update()
 
+    # colisao de player com apple
+    apple = colisao(players, apple)
+
     # verificar melhores da geração
-    if rodada >= 10:
+    if rodada >= 50:
         pygame.time.delay(1000)
 
-        #recebe os player com mutação em cima do melhor da geração passada
-        players = melhor_player(players, geracao) 
+        # recebe os player com mutação em cima do melhor da geração passada
+        players = melhor_player(players, geracao)
 
         rodada = 0
         geracao += 1
