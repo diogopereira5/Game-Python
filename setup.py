@@ -1,6 +1,7 @@
 import pygame
 from functions import create_apple, create_players, melhor_player, colisao
 from neural import move_players
+from random import randint
 
 pygame.init()
 display = pygame.display.set_mode((200, 200))
@@ -12,12 +13,12 @@ melhorPlayer = []
 rodada = 0
 geracao = 1
 qtd_players = 10
-qtd_movimentos = 200
+qtd_movimentos = 500
 
 display_open = True
 while display_open:
 
-    pygame.time.delay(50)
+    pygame.time.delay(10)
     rodada += 1
 
     # capta acoes do botao
@@ -35,11 +36,11 @@ while display_open:
 
     # mostrat personagens
     if apple:
-        pygame.draw.circle(display, (255, 0, 0),
+        pygame.draw.circle(display, (255, 255, 255),
                            (apple[0], apple[1]), apple[2])
     if players:
         for a in players:
-            pygame.draw.circle(display, (255, 255, 255), (a[0], a[1]), a[2])
+            pygame.draw.circle(display, (a[6][0],a[6][1],a[6][2]), (a[0], a[1]), a[2])
 
     # Rede Neural // mover jogadores
     players, apple = move_players(players, apple, colisao)
@@ -53,7 +54,7 @@ while display_open:
         apple = create_apple()  # nova posicao da apple
 
         # recebe os player com mutação em cima do melhor da geração passada
-        players = melhor_player(players, geracao, qtd_players)
+        players, qtd_players = melhor_player(players, geracao, qtd_players)
 
         rodada = 0
         geracao += 1

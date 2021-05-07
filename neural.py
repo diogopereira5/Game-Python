@@ -4,10 +4,9 @@ import sys
 
 
 def move_players(players, apple, colisao):
-
     for player in players:
         # pega posicao mais indicada a seguir pela rede neural
-        direcao = rede_neural(player, apple)
+        direcao, en1, en2 = rede_neural(player, apple)
 
         # pontuacao
         distanceX = apple[0] - player[0]
@@ -43,19 +42,24 @@ def move_players(players, apple, colisao):
         # pontuacao
         if NdistanceX < distanceX:
             player[3] += 1  # recebe nota 1 por está mais PROXIMO da apple
-        elif NdistanceX > distanceX:
+        if NdistanceX > distanceX:
             player[3] -= 1  # recebe nota -1 por está mais LONGE da apple
-            player[4] = atualiza_peso(player[4], 8, 3)
+            player[4] = atualiza_peso_erro(player[4], 8, 3, 1, en1)
+            player[5] = atualiza_peso_erro(player[5], 4, 8, 1, en2)
 
         if NdistanceY < distanceY:
             player[3] += 1  # recebe nota 1 por está mais PROXIMO da apple
-        elif NdistanceY > distanceY:
+        if NdistanceY > distanceY:
             player[3] -= 1  # recebe nota -1 por está mais LONGE da apple
-            player[5] = atualiza_peso(player[5], 4, 8)
+            player[4] = atualiza_peso_erro(player[4], 8, 3, 1, en1)
+            player[5] = atualiza_peso_erro(player[5], 4, 8, 1, en2)
 
-        elif NdistanceX == distanceX and NdistanceY == distanceY:
-            player[3] -= 10  # recebe nota -1 por está mais LONGE da apple
-            player[4] = atualiza_peso(player[4], 8, 3)
+        # player nao andar
+        if NdistanceX == distanceX and NdistanceY == distanceY:
+            player[3] -= 1  # recebe nota -1 por está mais LONGE da apple
+            player[4] = atualiza_peso_erro(player[4], 8, 3, 1, en1)
+            player[5] = atualiza_peso_erro(player[5], 4, 8, 1, en2)
+
 
     return players, apple
 
@@ -70,8 +74,8 @@ def rede_neural(player, apple):
     EntradaPrimeiraCamadaOculta = []
 
     for peso in pesosPrimeiraCamada:
-        # v = np.sum(peso * entradas)
-        v = 1
+        v = np.sum(peso * entradas)
+        # v = 1
         if v >= 1:
             v = 1
         else:
@@ -95,7 +99,7 @@ def rede_neural(player, apple):
             maior = saida[i]
             direcao = i
 
-    return direcao
+    return direcao, entradas, EntradaPrimeiraCamadaOculta
 
 
 def sigmoid(x):
@@ -120,4 +124,12 @@ def atualiza_peso(peso, value1, value2):
     return data
 
 
-
+def atualiza_peso_erro(peso, value1, value2, erro, entrada):
+    data = []
+    for i in range(value1):
+        temp1 = []
+        for j in range(value2):
+            value = peso[i][j] + (0.1 * entrada[j] * erro)
+            temp1.append(value)
+        data.append(temp1)
+    return data

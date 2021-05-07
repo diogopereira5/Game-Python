@@ -1,0 +1,58 @@
+def create_players(quantidade, peso1, peso2):
+    data = []
+    for i in range(quantidade):
+        temp = []
+        x = (randint(10, 191) // 10) * 10
+        y = (randint(10, 191) // 10) * 10
+        size = 5 # pixels
+
+        temp.append(x)  # 0
+        temp.append(y)  # 1
+        temp.append(size)  # 2
+
+        # 3 classificacao para a geracao (baseado em notas) quanto maior melhor
+        temp.append(0) # 3
+
+        #neuronios / pesos
+        pesosPrimeiraCamada = []  # primeira camada
+        if peso1 == 0:
+            for i in range(10):
+                temp1 = []
+                for j in range(5):
+                    value = (uniform(-1, 1))
+                    temp1.append(value)
+                pesosPrimeiraCamada.append(temp1)
+        else:  # se houver valor pre definidor, preencher aqui no individuo
+            pesosPrimeiraCamada = atualiza_peso(peso1, 8, 3)
+
+        temp.append(pesosPrimeiraCamada)  # 4
+
+        pesosPrimeiraCamadaOculta = []  # primeira camada
+        if peso1 == 0:
+            for i in range(5):
+                temp1 = []
+                for j in range(10):
+                    value = (uniform(-1, 1))
+                    temp1.append(value)
+                pesosPrimeiraCamadaOculta.append(temp1)
+        else:  # se houver valor pre definidor, preencher aqui no individuo
+            pesosPrimeiraCamadaOculta = atualiza_peso(peso1, 8, 3)
+
+        temp.append(pesosPrimeiraCamadaOculta)  # 5
+
+        pesosSegundaCamadaOculta = []  # camada oculta
+        if peso2 == 0:
+            for i in range(4):
+                temp1 = []
+                for j in range(5):
+                    value = (uniform(-1, 1))
+                    temp1.append(value)
+                pesosSegundaCamadaOculta.append(temp1)
+        else:  # se houver valor pre definidor, preencher aqui no individuo
+            pesosSegundaCamadaOculta = atualiza_peso(peso2, 4, 8)
+
+        temp.append(pesosSegundaCamadaOculta)  # 6
+
+        data.append(temp)
+
+    return data
